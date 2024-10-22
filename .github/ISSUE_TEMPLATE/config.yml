@@ -1,0 +1,7 @@
+contact_links:
+  - name: Feature request
+    url: https://github.com/wosherco/trpc-extractor/discussions
+    about: Request features on discussions
+  - name: Ask a question
+    url: https://github.com/wosherco/trpc-extractor/discussions
+    about: Ask questions and discuss with other community members

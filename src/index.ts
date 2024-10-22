@@ -1,0 +1,1 @@
+export { extractRouter } from "./extractor";
