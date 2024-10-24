@@ -6,7 +6,9 @@ import { z } from "zod";
 interface RouteInfo {
   path: string;
   routeType: "query" | "mutation";
+  // json schema or null
   input: any;
+  // json schema or null
   output: any;
 }
 
