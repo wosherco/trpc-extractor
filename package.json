@@ -5,6 +5,8 @@
   "keywords": [
     "trpc"
   ],
+  "homepage": "https://github.com/wosherco/trpc-extractor",
+  "issues": "https://github.com/wosherco/trpc-extractor/issues",
   "author": "Pol (polv.dev)",
   "license": "Apache-2.0",
   "bin": "./dist/bin.js",
