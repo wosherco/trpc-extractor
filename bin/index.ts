@@ -4,6 +4,7 @@ import { extractRouter } from "../src/extractor";
 import fs from "fs/promises";
 import chokidar from "chokidar";
 import { createJiti } from "jiti";
+import { LIB_VERSION } from "../src/version";
 
 const program = new Command();
 const jiti = createJiti(import.meta.url, {
@@ -12,7 +13,7 @@ const jiti = createJiti(import.meta.url, {
 });
 
 program
-  .version("0.0.1")
+  .version(LIB_VERSION)
   .option(
     "-o, --output <path>",
     "output of the TRPC routes json. If empty will print to stdout"
