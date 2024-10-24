@@ -1,10 +1,10 @@
 import { Command } from "commander";
 import * as path from "path";
-import { extractRouter } from "../src/extractor";
+import { extractRouter } from "../extractor";
 import fs from "fs/promises";
 import chokidar from "chokidar";
 import { createJiti } from "jiti";
-import { LIB_VERSION } from "../src/version";
+import { LIB_VERSION } from "../version";
 
 const program = new Command();
 const jiti = createJiti(import.meta.url, {
@@ -58,35 +58,41 @@ async function processRouter() {
   }
 }
 
-await processRouter();
+async function main() {
+  await processRouter();
 
-if (options.watch !== undefined) {
-  const watchPath =
-    typeof options.watch === "string"
-      ? path.resolve(options.watch)
-      : path.resolve(options.input);
+  if (options.watch !== undefined) {
+    const watchPath =
+      typeof options.watch === "string"
+        ? path.resolve(options.watch)
+        : path.resolve(options.input);
 
-  const watcher = chokidar.watch(watchPath, {
-    persistent: true,
-    ignoreInitial: false,
-    usePolling: true,
-    interval: 100,
-    awaitWriteFinish: true,
-  });
+    const watcher = chokidar.watch(watchPath, {
+      persistent: true,
+      ignoreInitial: false,
+      usePolling: true,
+      interval: 100,
+      awaitWriteFinish: true,
+    });
 
-  watcher.on("change", async (path) => {
-    console.log(`File ${path} has been changed. Processing...`);
-    const startTime = Date.now();
-    await processRouter();
-    const endTime = Date.now();
-    const timeTaken = endTime - startTime;
-    console.log(`Update completed in ${timeTaken} ms.`);
+    watcher.on("change", async (path) => {
+      console.log(`File ${path} has been changed. Processing...`);
+      const startTime = Date.now();
+      await processRouter();
+      const endTime = Date.now();
+      const timeTaken = endTime - startTime;
+      console.log(`Update completed in ${timeTaken} ms.`);
+      console.log(
+        `Watching for changes in ${watchPath} and its dependencies...`
+      );
+    });
+
+    watcher.on("error", (error) => {
+      console.error(`Watcher error: ${error}`);
+    });
+
     console.log(`Watching for changes in ${watchPath} and its dependencies...`);
-  });
-
-  watcher.on("error", (error) => {
-    console.error(`Watcher error: ${error}`);
-  });
-
-  console.log(`Watching for changes in ${watchPath} and its dependencies...`);
+  }
 }
+
+main();
