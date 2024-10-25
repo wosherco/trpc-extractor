@@ -13,13 +13,27 @@ interface RouteInfo {
 }
 
 // ExtractedRouter contains the route map for easy lookup.
-type ExtractedRouter = Record<string, RouteInfo>;
+type ExtractedRouter = {
+  routes: Record<string, RouteInfo>;
+  transformer?: { input: string; output: string };
+};
 
 // Function to extract routes from a TRPC router.
 export function extractRouter<TRouter extends AnyRouter>(
   router: TRouter
 ): ExtractedRouter {
   const extractedRouter: Record<string, RouteInfo> = {}; // The route map to be returned.
+  let transformer: { input: any; output: any } | undefined;
+
+  if (!router._def._config.transformer._default) {
+    // TODO: Add transformer
+    const inputSerializer = new router._def._config.transformer.input();
+    const outputSerializer = new router._def._config.transformer.output();
+    transformer = {
+      input: inputSerializer.serialize("{{SLOT}}"),
+      output: outputSerializer.serialize("{{SLOT}}"),
+    };
+  }
 
   // Recursive helper function to traverse routers and extract route information.
   function extractRoutes(currentRouter: AnyRouter, prefix: string = "") {
@@ -69,5 +83,5 @@ export function extractRouter<TRouter extends AnyRouter>(
   // Start the extraction from the root router.
   extractRoutes(router);
 
-  return extractedRouter;
+  return { routes: extractedRouter, transformer };
 }

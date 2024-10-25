@@ -40,16 +40,25 @@ interface RouteInfo {
 }
 
 // ExtractedRouter contains the route map for easy lookup.
-type ExtractedRouter = Record<string, RouteInfo>;
+type ExtractedRouter = {
+  routes: Record<string, RouteInfo>;
+  transformer?: { input: any; output: any };
+};
 ```
 
 ```json
 {
-  "some.route": {
-    "path": "some.route",
-    "routeType": "query or mutation",
-    "input": "json schema or null",
-    "output": "json schema or null"
+  "routes": {
+    "some.route": {
+      "path": "some.route",
+      "routeType": "query or mutation",
+      "input": "json schema or null",
+      "output": "json schema or null"
+    }
+  },
+  "transformer": {
+    "input": { "json": "{{SLOT}}" },
+    "output": { "json": "{{SLOT}}" }
   }
 }
 ```
