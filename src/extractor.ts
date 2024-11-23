@@ -1,4 +1,4 @@
-import type { AnyProcedure, AnyRouter, ProcedureRecord } from "@trpc/server";
+import type { AnyProcedure, AnyRouter } from "@trpc/server";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { z } from "zod";
 
@@ -25,26 +25,29 @@ export function extractRouter<TRouter extends AnyRouter>(
   const extractedRouter: Record<string, RouteInfo> = {}; // The route map to be returned.
   let transformer: { input: any; output: any } | undefined;
 
-  if (!router._def._config.transformer._default) {
-    // TODO: Add transformer
-    const inputSerializer = new router._def._config.transformer.input();
-    const outputSerializer = new router._def._config.transformer.output();
-    transformer = {
-      input: inputSerializer.serialize("{{SLOT}}"),
-      output: outputSerializer.serialize("{{SLOT}}"),
-    };
-  }
+  // if (!router._def._config.transformer._default) {
+  //   // TODO: Add transformer
+  //   const inputSerializer = new router._def._config.transformer.input();
+  //   const outputSerializer = new router._def._config.transformer.output();
+  //   transformer = {
+  //     input: inputSerializer.serialize("{{SLOT}}"),
+  //     output: outputSerializer.serialize("{{SLOT}}"),
+  //   };
+  // }
 
   // Recursive helper function to traverse routers and extract route information.
   function extractRoutes(currentRouter: AnyRouter, prefix: string = "") {
-    const procedures = currentRouter._def.procedures as ProcedureRecord; // Extracting procedures.
+    const procedures = currentRouter._def.procedures; // Extracting procedures.
     const record = currentRouter._def.record as Record<
       string,
       AnyRouter | AnyProcedure
     >; // Nested routers/procedures.
 
     // Loop over each procedure in the current router.
-    for (const [key, procedure] of Object.entries(procedures)) {
+    for (const [key, procedure] of Object.entries(procedures) as [
+      string,
+      any
+    ][]) {
       const path = `${prefix}${key}`;
 
       // Getting input schemas
@@ -61,7 +64,9 @@ export function extractRouter<TRouter extends AnyRouter>(
         (procedure._def.output as z.ZodTypeAny | undefined) ?? null; // Output schema or null.
 
       // Use descriptive names for schemas
-      const routeType = procedure._def.query ? "query" : "mutation";
+      // This doesn't work for TRPC 11
+      // const routeType = procedure._def.query ? "query" : "mutation";
+      const routeType = procedure._def.type;
 
       // Add the route to the map.
       extractedRouter[key] = {

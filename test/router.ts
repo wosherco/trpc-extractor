@@ -1,6 +1,7 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
 import superjson from "superjson";
+import type { TRPCRouterRecord } from "@trpc/server";
 
 // Initialize a context for the server
 function createContext() {
@@ -14,6 +15,12 @@ type Context = Awaited<ReturnType<typeof createContext>>;
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
 });
+
+const protectedProcedure = t.procedure.use(
+  t.middleware(async ({ ctx, next }) => {
+    return next({ ctx: { ...ctx } });
+  })
+);
 
 const appRouter = t.router({
   // Greeting procedure
@@ -41,6 +48,20 @@ const appRouter = t.router({
         .query(({ input }) => ({ message: `Hello, ${input.name}!` })),
     }),
   }),
+
+  auth: {
+    getUser: protectedProcedure
+      .output(
+        z.object({
+          id: z.string(),
+        })
+      )
+      .query(() => {
+        return {
+          id: "something",
+        };
+      }),
+  } satisfies TRPCRouterRecord,
 });
 
 export default appRouter;
