@@ -1,5 +1,11 @@
 # trpc-extractor
 
+## 1.2.0
+
+### Minor Changes
+
+- Supporting TRPC 11 only
+
 ## 1.1.2
 
 ### Patch Changes

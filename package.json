@@ -1,6 +1,6 @@
 {
   "name": "trpc-extractor",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A route extractor for TRPC. Exports your TRPC routes into a JSON file, that can be used for generating types in other coding languages.",
   "keywords": [
     "trpc"
