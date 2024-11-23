@@ -1,5 +1,11 @@
 # trpc-extractor
 
+## 1.1.2
+
+### Patch Changes
+
+- Reverted last patch
+
 ## 1.1.1
 
 ### Patch Changes
