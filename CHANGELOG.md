@@ -1,5 +1,11 @@
 # trpc-extractor
 
+## 1.2.2
+
+### Patch Changes
+
+- Fixed publish
+
 ## 1.2.0
 
 ### Minor Changes
